@@ -1,0 +1,14 @@
+#!/bin/bash
+
+exec_path="/usr/local/bin"
+
+# Check if PATH contains /usr/local/bin
+if [[ ":$PATH:" == *":/usr/local/bin:"* ]]; then
+  echo "Installing monet to /usr/local/bin/monet"
+
+elif [[ ":$PATH:" == *":/usr/bin:"* ]]; then
+  echo "Installing monet to /usr/bin/monet"
+  $exec_path="/usr/bin"
+fi
+
+cp monet $exec_path

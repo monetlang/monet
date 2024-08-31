@@ -1,0 +1,44 @@
+#!/bin/bash
+
+if [ $# -le 1 ] && ([[ "$1" != "compile" ]] && [[ "$1" != "web-server" ]]); then
+  echo -e "Usage:\n
+  \tcompile <path-to-monet-file>\n
+  \tweb-server <port>"
+  exit 1
+fi
+
+if [ $# -eq 1 ]; then
+  if [ "$1" = "compile" ]; then
+    echo -e "Usage: compile <path-to-monet-file>"
+    exit 1
+  elif [ "$1" = "web-server" ]; then
+    npm --prefix ./web run dev -- --port 8080
+  else
+    echo -e "Usage:\n
+    \tcompile <path-to-monet-file>\n
+    \tweb-server <port>"
+    exit 1
+  fi
+fi
+
+if [ $# -eq 2 ]; then
+  if [ "$1" = "compile" ]; then
+    resolved_path=$(realpath $2)
+    TARGET_FILE=$resolved_path wasm-pack build ./core --target web --out-dir ../pkg
+  elif [ "$1" = "web-server" ]; then
+    # Execute the command using the concatenated environment variable
+    npm --prefix ./web run dev -- --port $2
+  else
+    echo -e "Usage:\n
+    \tcompile <path-to-monet-file>\n
+    \tweb-server <port>"
+    exit 1
+  fi
+fi
+
+# Check if the command was successful
+if [ $? -eq 0 ]; then
+  echo "Compiled $resolved_path successfully."
+else
+  echo "Compilation failed."
+fi
